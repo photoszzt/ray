@@ -10,6 +10,7 @@ import time
 import numpy as np
 import pickle
 import pytest
+import setproctitle
 
 import ray
 import ray.ray_constants as ray_constants
@@ -17,7 +18,6 @@ import ray.util.accelerators
 import ray.cluster_utils
 import ray.test_utils
 from ray import resource_spec
-import setproctitle
 import subprocess
 
 from ray.test_utils import (check_call_ray, wait_for_condition,

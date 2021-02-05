@@ -37,7 +37,7 @@ pickle5_path = os.path.join(
     os.path.abspath(os.path.dirname(__file__)), "pickle5_files")
 sys.path.insert(0, pickle5_path)
 
-# Importing psutil & setproctitle. Must be before ray._raylet is initialized.
+# Importing psutil. Must be before ray._raylet is initialized.
 thirdparty_files = os.path.join(
     os.path.abspath(os.path.dirname(__file__)), "thirdparty_files")
 sys.path.insert(0, thirdparty_files)

@@ -1,6 +1,6 @@
 """
 This script ensures python files conform to ray's import ordering rules.
-In particular, we make sure psutil and setproctitle is imported _after_
+In particular, we make sure psutil is imported _after_
 importing ray due to our bundling of the two libraries.
 
 Usage:
@@ -22,7 +22,6 @@ def check_import(file):
     check_to_lines = {
         "import ray": -1,
         "import psutil": -1,
-        "import setproctitle": -1
     }
 
     with io.open(file, "r", encoding="utf-8") as f:
@@ -41,7 +40,7 @@ def check_import(file):
                              line) and check_to_lines[check] == -1:
                     check_to_lines[check] = i
 
-    for import_lib in ["import psutil", "import setproctitle"]:
+    for import_lib in ["import psutil"]:
         if check_to_lines[import_lib] != -1:
             import_psutil_line = check_to_lines[import_lib]
             import_ray_line = check_to_lines["import ray"]

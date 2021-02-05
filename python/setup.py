@@ -142,6 +142,7 @@ install_requires = [
     "py-spy >= 0.2.0",
     "pyyaml",
     "requests",
+    "setproctitle",
     "redis >= 3.5.0",
     "opencensus",
     "prometheus_client >= 0.7.1",
@@ -269,7 +270,7 @@ def build(build_python, build_java):
     # that certain flags will not be passed along such as --user or sudo.
     # TODO(rkn): Fix this.
     if not os.getenv("SKIP_THIRDPARTY_INSTALL"):
-        pip_packages = ["psutil", "setproctitle==1.1.10"]
+        pip_packages = ["psutil"]
         subprocess.check_call(
             [
                 sys.executable, "-m", "pip", "install", "-q",
