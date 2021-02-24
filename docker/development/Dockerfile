@@ -11,7 +11,7 @@ RUN sudo chown -R ray:users /ray && cd /ray && git init && ./ci/travis/install-b
 ENV PATH=$PATH:/home/ray/bin
 RUN echo 'build --remote_cache="https://storage.googleapis.com/ray-bazel-cache"' >> $HOME/.bazelrc 
 RUN echo 'build --remote_upload_local_results=false' >> $HOME/.bazelrc 
-WORKDIR /ray/
+WORKDIR $HOME/ray/
 # The result of bazel build is reused in pip install. It if run first to allow
 # for failover to serial build if parallel build requires too much resources.
 RUN bazel build //:ray_pkg || bazel build --jobs 1 //:ray_pkg
