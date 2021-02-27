@@ -46,14 +46,11 @@ RUN sudo apt-get update -y && sudo apt-get upgrade -y \
     && echo 'export PATH=$HOME/anaconda3/bin:$PATH' >> /home/ray/.bashrc \
     && rm /tmp/miniconda.sh \
     && $HOME/anaconda3/bin/conda install -y \
-        libgcc python=$PYTHON_VERSION \
+        libgcc python=$PYTHON_VERSION numpy==1.15.4 \
+        blist psutil flatbuffers \
     && $HOME/anaconda3/bin/conda clean -y --all \
     && $HOME/anaconda3/bin/pip install --no-cache-dir \
-        flatbuffers \
         cython==0.29.0 \
-        numpy==1.15.4 \
-        psutil \
-        blist \ 
         atari-py \
     # blist is needed for numpy (which is re-installed when ray is installed)
     # atari-py is built from source for Python 3.8 (requires g++ & zlib1g-dev)
