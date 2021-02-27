@@ -26,7 +26,7 @@ class DistArray:
         self.shape = shape
         self.ndim = len(shape)
         if isinstance(chunks, (Number, str)):
-            chunks = (chunks,) * len(shape)
+            chunks = (chunks, ) * len(shape)
         if isinstance(chunks, dict):
             chunks = tuple(chunks.get(i, None) for i in range(len(shape)))
         if not all(map(is_integer, chunks)):
@@ -84,8 +84,10 @@ class DistArray:
         dtype = first_block.dtype
         result = np.zeros(self.shape, dtype=dtype)
         for index in np.ndindex(*self.num_blocks):
-            lower = DistArray.compute_block_lower(index, self.shape, self.chunks)
-            upper = DistArray.compute_block_upper(index, self.shape, self.chunks)
+            lower = DistArray.compute_block_lower(index, self.shape,
+                                                  self.chunks)
+            upper = DistArray.compute_block_upper(index, self.shape,
+                                                  self.chunks)
             value = ray.get(self.object_refs[index])
             result[tuple(slice(l, u) for (l, u) in zip(lower, upper))] = value
         return result
@@ -129,7 +131,8 @@ def ones(shape, dtype_name="float", chunks=BLOCK_SIZE):
     result = DistArray(shape, chunks=chunks)
     for index in np.ndindex(*result.num_blocks):
         result.object_refs[index] = ra.ones.remote(
-            DistArray.compute_block_shape(index, shape, chunks), dtype_name=dtype_name)
+            DistArray.compute_block_shape(index, shape, chunks),
+            dtype_name=dtype_name)
     return result
 
 
@@ -266,8 +269,8 @@ def subblocks(a, *ranges):
                              "the {}th range is {}, and a.num_blocks = {}."
                              .format(i, ranges[i], a.num_blocks))
     last_index = [r[-1] for r in ranges]
-    last_block_shape = DistArray.compute_block_shape(
-        last_index, a.shape, a.chunks)
+    last_block_shape = DistArray.compute_block_shape(last_index, a.shape,
+                                                     a.chunks)
     shape = [(len(ranges[i]) - 1) * a.chunks[i] + last_block_shape[i]
              for i in range(a.ndim)]
     result = DistArray(shape, chunks=a.chunks)
@@ -294,13 +297,15 @@ def transpose(a):
 @ray.remote
 def add(x1, x2):
     if x1.shape != x2.shape:
-        raise ValueError("add expects arguments `x1` and `x2` to have the same "
-                         "shape, but x1.shape = {}, and x2.shape = {}.".format(
-                             x1.shape, x2.shape))
+        raise ValueError(
+            "add expects arguments `x1` and `x2` to have the same "
+            "shape, but x1.shape = {}, and x2.shape = {}.".format(
+                x1.shape, x2.shape))
     if x1.chunks != x2.chunks:
-        raise ValueError("add expects arguments `x1` and `x2` to have the same "
-                         "block size, but x1.chunks = {}, and x2.chunks = {}.".format(
-                             x1.chunks, x2.chunks))
+        raise ValueError(
+            "add expects arguments `x1` and `x2` to have the same "
+            "block size, but x1.chunks = {}, and x2.chunks = {}.".format(
+                x1.chunks, x2.chunks))
     result = DistArray(x1.shape, chunks=x1.chunks)
     for index in np.ndindex(*result.num_blocks):
         result.object_refs[index] = ra.add.remote(x1.object_refs[index],
@@ -312,13 +317,15 @@ def add(x1, x2):
 @ray.remote
 def subtract(x1, x2):
     if x1.shape != x2.shape:
-        raise ValueError("subtract expects arguments `x1` and `x2` to have the "
-                         "same shape, but x1.shape = {}, and x2.shape = {}."
-                         .format(x1.shape, x2.shape))
+        raise ValueError(
+            "subtract expects arguments `x1` and `x2` to have the "
+            "same shape, but x1.shape = {}, and x2.shape = {}.".format(
+                x1.shape, x2.shape))
     if x1.chunks != x2.chunks:
-        raise ValueError("add expects arguments `x1` and `x2` to have the same "
-                         "block size, but x1.chunks = {}, and x2.chunks = {}.".format(
-                             x1.chunks, x2.chunks))
+        raise ValueError(
+            "add expects arguments `x1` and `x2` to have the same "
+            "block size, but x1.chunks = {}, and x2.chunks = {}.".format(
+                x1.chunks, x2.chunks))
     result = DistArray(x1.shape, chunks=x1.chunks)
     for index in np.ndindex(*result.num_blocks):
         result.object_refs[index] = ra.subtract.remote(x1.object_refs[index],
