@@ -1021,13 +1021,21 @@ def attach(cluster_config_file, start, screen, tmux, cluster_name,
     required=False,
     type=str,
     help="Override the configured cluster name.")
+@click.option(
+    "--ip-address", required=False, type=str, help="specify ip address")
 @add_click_options(logging_options)
-def rsync_down(cluster_config_file, source, target, cluster_name, log_style,
-               log_color, verbose):
+def rsync_down(cluster_config_file, source, target, cluster_name, ip_address,
+               log_style, log_color, verbose):
     """Download specific files from a Ray cluster."""
     cli_logger.configure(log_style, log_color, verbose)
 
-    rsync(cluster_config_file, source, target, cluster_name, down=True)
+    rsync(
+        cluster_config_file,
+        source,
+        target,
+        cluster_name,
+        down=True,
+        ip_address=ip_address)
 
 
 @cli.command()
