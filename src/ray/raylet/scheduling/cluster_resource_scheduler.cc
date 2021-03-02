@@ -331,10 +331,15 @@ std::string ClusterResourceScheduler::GetBestSchedulableNode(
   std::string id_string;
   if (node_id == -1) {
     // This is not a schedulable node, so return empty string.
-    return "";
+    id_string = "";
+  } else {
+    // Return the string name of the node.
+    id_string = string_to_int_map_.Get(node_id);
   }
-  // Return the string name of the node.
-  return string_to_int_map_.Get(node_id);
+  RAY_LOG(DEBUG) << "GetBestSchedulableNode, best_node = " << id_string << "(" << node_id
+                 << "), # nodes = " << nodes_.size()
+                 << ", task_req = " << task_request.DebugString();
+  return id_string;
 }
 
 bool ClusterResourceScheduler::SubtractRemoteNodeAvailableResources(
